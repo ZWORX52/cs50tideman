@@ -272,21 +272,6 @@ void sort_pairs(void)
     return;
 }
 
-// Check if a cycle in locked[][] exists
-bool check_for_cycle(void)
-{
-    for (int i = 0; i < candidate_count; i++)
-    {
-        pair visited = make_pair(1, 2);
-        // Someone starts a cycle! Alert, alert!
-        if (newvisit(visited, i, 642))
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
 // Explore one candidate's locked[][] entries to determine whether a cycle is created
 bool visit(pair *visitedaddress, int i)
 {
@@ -313,30 +298,13 @@ bool visit(pair *visitedaddress, int i)
     return false;
 }
 
-// A new version of visit()
-bool newvisit(pair start, int i, int j)
-{
-    if (start.winner == i && start.loser == j)
-    {
-        return true;
-    }
-    for (int k = 0; k < MAX; k++)
-    {
-        if (locked[i][k])
-        {
-            return newvisit(start, k, j);
-        }
-    }
-    return false;
-}
-
 // Lock pairs into the candidate graph in order, without creating cycles
 void lock_pairs(void)
 {
     // Add each pair, one at a time, using check_for_cycle as a checker
     for (int i = 0; i < pair_count; i++)
     {
-        pair visited[MAX];
+        pair visited[MAX] = {make_pair(0, 0)};
         pair this_pair = pairs[i];
         locked[this_pair.winner][this_pair.loser] = true;
         if (visit(visited, this_pair.winner))
